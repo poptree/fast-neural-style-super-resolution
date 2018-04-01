@@ -98,8 +98,15 @@ def train(args):
                 agg_content_loss*up / (batch_id + 1),\
                 agg_pix_loss *up/ (batch_id + 1),\
                 (agg_content_loss + agg_pix_loss)*up / (batch_id + 1))
-                print(mesg)         
+                print(mesg)  
 
+        if  e%2 == 0:
+            transformer.eval()
+            transformer.cpu()
+            save_model_filename = "epoch_" + str(args.epochs) + "_" + str(time.ctime()).replace(' ', '_') + "_" + str(
+            args.content_weight) + "_SRCNN_" + str(args.srcnn) + ".model"
+            save_model_path = os.path.join(args.save_model_dir, save_model_filename)
+            torch.save(transformer.state_dict(), save_model_path)         
 
     transformer.eval()
     transformer.cpu()

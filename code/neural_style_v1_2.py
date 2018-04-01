@@ -59,15 +59,17 @@ def train(args):
             content_loss = 0
 
             if args.cuda:
-                x=x.cuda()
-                style=style.cuda()
                 pix_x_v=pix_x_v.cuda()
                 pix_s_v=pix_s_v.cuda()
+            
+            #print(pix_x_v)
 
             output = transformer(pix_x_v)
             pix_loss = args.pix_weight * mse_loss(output, pix_s_v)
 
             vgg_s = Variable(style.clone(),requires_grad=False)
+            if args.cuda:
+                vgg_s=vgg_s.cuda()
 
             vgg_x = utils.init_vgg_input(output)
             vgg_s = utils.init_vgg_input(vgg_s)

@@ -96,9 +96,17 @@ def make_dataset(args):
     transform_LR = None
     transform_HR = None
 
+    transform_HR = transforms.Compose([ transforms.FiveCrop((args.size,args.size),\
+                                        transforms.ToTensor()\
+                                       ])
+    transform_LR = transforms.Compose([ transforms.FiveCrop((args.size,args.size)),\
+                                        AddMyGauss(),\
+                                        transforms.ToTensor()\
+                                        ])
+    """
     transform_HR = transforms.Compose([\
                                         transforms.Resize((args.image_size,args.image_size),interpolation=3),\
-                                        transforms.CenterCrop((int(args.image_size/2),int(args.image_size/2))),\
+                                        #transforms.CenterCrop((int(args.image_size/2),int(args.image_size/2))),\
                                         transforms.ToTensor()
                                        ])
     if args.srcnn:
@@ -111,10 +119,12 @@ def make_dataset(args):
     else:
         transform_LR = transforms.Compose([\
                                         transforms.Resize((int(args.image_size/args.upsample),int(args.image_size/args.upsample)),interpolation=3),\
-                                        transforms.CenterCrop((int(args.image_size/args.upsample/2),int(args.image_size/args.upsample/2))),\
+                                        transforms.Resize((int(args.image_size),int(args.image_size)),interpolation=3),\
+                                        #transforms.CenterCrop((int(args.image_size/args.upsample/2),int(args.image_size/args.upsample/2))),\
                                         AddMyGauss(),\
                                         transforms.ToTensor()
                                        ])
+    """
 
     train_dataset_HR = datasets.ImageFolder(args.dataset, transform_HR)
     train_loader_HR = DataLoader(train_dataset_HR, batch_size = args.batch_size, **kwargs1)
